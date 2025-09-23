@@ -11,13 +11,18 @@ class EventRepositoryImpl(private val apiService: ApiService) : EventRepository 
 
     override suspend fun getEvents(): List<Event> = apiService.getEvents()
 
-    override suspend fun uploadParticipants(eventId: String, fileBytes: ByteArray, fileName: String) =
-        apiService.uploadParticipants(eventId, fileBytes, fileName)
+    override suspend fun uploadParticipants(eventId: String, fileBytes: ByteArray, fileName: String): Boolean {
+        return apiService.uploadParticipants(eventId, fileBytes, fileName)
+    }
 
     override suspend fun sendQR(eventId: String) =
         apiService.sendQR(eventId)
 
     override suspend fun addEvent(event: Event): Boolean {
         return apiService.addEventToUser(event)
+    }
+
+    override suspend fun getEventById(eventId: String): Event? {
+        return apiService.findEventById(eventId)
     }
 }

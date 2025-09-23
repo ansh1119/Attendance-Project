@@ -17,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.cpbyte.attendanceapp.presentation.AddEventScreen
 import com.cpbyte.attendanceapp.presentation.AuthViewModel
 import com.cpbyte.attendanceapp.presentation.EventViewModel
+import com.cpbyte.attendanceapp.presentation.navigation.App
 import com.cpbyte.attendanceapp.presentation.screen.LoginScreen
 import com.cpbyte.attendanceapp.presentation.screen.SignupScreen
 import com.cpbyte.attendanceapp.presentation.screen.UserEventsScreen
@@ -39,6 +41,8 @@ class MainActivity : ComponentActivity() {
             val context= LocalContext.current
             val viewModel: AuthViewModel=get()
             val eventViewModel: EventViewModel=get()
+            val navController= rememberNavController()
+            val tokenProvider: AuthTokenProvider=get()
             AttendanceAppTheme {
 //                LoginScreen(viewModel) {
 //                    Toast.makeText(context,"jhkjh",Toast.LENGTH_LONG).show()
@@ -49,7 +53,8 @@ class MainActivity : ComponentActivity() {
 //                UserEventsScreen(eventViewModel) {event->
 //                    Toast.makeText(context,event.id,Toast.LENGTH_LONG).show()
 //                }
-                AddEventScreen(eventViewModel) { }
+
+                App(navController,viewModel,eventViewModel,tokenProvider)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.cpbyte.attendanceapp.presentation
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cpbyte.attendanceapp.data.model.Event
@@ -41,10 +42,26 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     }
 
 
-    fun uploadParticipants(eventId: String, fileBytes: ByteArray, fileName: String) = viewModelScope.launch {
-        _uploadStatus.value = try { repository.uploadParticipants(eventId, fileBytes, fileName) } catch (e: Exception) { e.printStackTrace(); false }
+    // Fetch single event by ID
+    suspend fun getEventById(eventId: String): Event? {
+        Log.d("EVENT VM", "HIT")
+        return try {
+            repository.getEventById(eventId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
+    // Upload participants Excel file
+    suspend fun uploadParticipants(eventId: String, fileBytes: ByteArray, fileName: String): Boolean {
+        return try {
+            repository.uploadParticipants(eventId, fileBytes, fileName)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
     fun sendQR(eventId: String) = viewModelScope.launch {
         _qrStatus.value = try { repository.sendQR(eventId) } catch (e: Exception) { e.printStackTrace(); false }
     }

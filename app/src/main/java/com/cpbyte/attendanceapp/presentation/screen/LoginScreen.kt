@@ -1,5 +1,6 @@
 package com.cpbyte.attendanceapp.presentation.screen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,7 +18,7 @@ import com.cpbyte.attendanceapp.presentation.AuthViewModel
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
-    onLoginSuccess: (String) -> Unit
+    onLoginSuccess: (String) -> Unit,
 ) {
     val loginResponse by authViewModel.loginResponse.collectAsState()
 val context= LocalContext.current
@@ -28,7 +29,8 @@ val context= LocalContext.current
     LaunchedEffect(loginResponse) {
         loginResponse?.let {
             if (it.token.isNotBlank()) {
-                Toast.makeText(context, loginResponse!!.token.toString(),Toast.LENGTH_LONG).show()
+                Log.d("LOGGING IN","SUCCESS")
+                onLoginSuccess(it.token)
                 authViewModel.resetLoginResponse()
 
             } else {

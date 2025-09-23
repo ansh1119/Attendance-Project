@@ -81,4 +81,10 @@ class ApiService(
             false
         }
     }
+
+    suspend fun findEventById(eventId: String): Event {
+           return client.get("$baseUrl/event/get/$eventId"){
+               accept(ContentType.Application.Json)
+           }.body()
+    }
 }

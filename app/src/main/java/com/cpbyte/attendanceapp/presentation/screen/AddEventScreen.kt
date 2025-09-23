@@ -2,6 +2,7 @@ package com.cpbyte.attendanceapp.presentation
 
 import android.app.DatePickerDialog
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,9 +24,13 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddEventScreen(
+    selectedDate: String,
     eventViewModel: EventViewModel,
-    onEventAdded: () -> Unit
+    onBack: () -> Unit,
+    onEventAdded: ()->Unit
 ) {
+
+
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -33,6 +38,10 @@ fun AddEventScreen(
     val context = LocalContext.current
     val isoFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
+
+    BackHandler {
+        onBack
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
