@@ -27,10 +27,8 @@ fun AddEventScreen(
     selectedDate: String,
     eventViewModel: EventViewModel,
     onBack: () -> Unit,
-    onEventAdded: ()->Unit
+    onEventAdded: () -> Unit
 ) {
-
-
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -38,85 +36,136 @@ fun AddEventScreen(
     val context = LocalContext.current
     val isoFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
-
-    BackHandler {
-        onBack
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("Event Title") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Start Date Picker
-        Button(onClick = {
-            val picker = DatePickerDialog(
-                context,
-                { _, year, month, day ->
-                    startDate = LocalDate.of(year, month + 1, day)
-                },
-                LocalDate.now().year,
-                LocalDate.now().monthValue - 1,
-                LocalDate.now().dayOfMonth
-            )
-            picker.show()
-        }) {
-            Text(text = startDate?.format(isoFormatter) ?: "Select Start Date")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // End Date Picker
-        Button(onClick = {
-            val picker = DatePickerDialog(
-                context,
-                { _, year, month, day ->
-                    endDate = LocalDate.of(year, month + 1, day)
-                },
-                LocalDate.now().year,
-                LocalDate.now().monthValue - 1,
-                LocalDate.now().dayOfMonth
-            )
-            picker.show()
-        }) {
-            Text(text = endDate?.format(isoFormatter) ?: "Select End Date")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                if (title.isNotBlank() && startDate != null && endDate != null) {
-                    val event = Event(
-                        name = title,
-                        description = description,
-                        startDate = startDate!!.format(isoFormatter),
-                        endDate = endDate!!.format(isoFormatter)
-                    )
-                    eventViewModel.addEvent(event)
-                    onEventAdded()
-                }
-            },
-            modifier = Modifier.align(Alignment.End)
+    // Dark background
+    Scaffold { innerPadding->
+        Surface(
+            modifier = Modifier.fillMaxSize()
+                .padding(innerPadding),
+            color = Color.Black
         ) {
-            Text("Add Event")
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Add New Event",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Event Title", color = Color.White.copy(alpha = 0.7f)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description", color = Color.White.copy(alpha = 0.7f)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Start Date Picker
+                Button(
+                    onClick = {
+                        val picker = DatePickerDialog(
+                            context,
+                            { _, year, month, day ->
+                                startDate = LocalDate.of(year, month + 1, day)
+                            },
+                            LocalDate.now().year,
+                            LocalDate.now().monthValue - 1,
+                            LocalDate.now().dayOfMonth
+                        )
+                        picker.show()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = startDate?.format(isoFormatter) ?: "Select Start Date",
+                        color = Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // End Date Picker
+                Button(
+                    onClick = {
+                        val picker = DatePickerDialog(
+                            context,
+                            { _, year, month, day ->
+                                endDate = LocalDate.of(year, month + 1, day)
+                            },
+                            LocalDate.now().year,
+                            LocalDate.now().monthValue - 1,
+                            LocalDate.now().dayOfMonth
+                        )
+                        picker.show()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = endDate?.format(isoFormatter) ?: "Select End Date",
+                        color = Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        if (title.isNotBlank() && startDate != null && endDate != null) {
+                            val event = Event(
+                                name = title,
+                                description = description,
+                                startDate = startDate!!.format(isoFormatter),
+                                endDate = endDate!!.format(isoFormatter)
+                            )
+                            eventViewModel.addEvent(event)
+
+                            onEventAdded()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Add Event", color = Color.Black)
+                }
+            }
         }
     }
+
 }

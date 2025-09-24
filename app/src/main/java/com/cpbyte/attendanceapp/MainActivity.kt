@@ -44,12 +44,12 @@ class MainActivity : ComponentActivity() {
             val navController= rememberNavController()
             val tokenProvider: AuthTokenProvider=get()
             AttendanceAppTheme {
-//                LoginScreen(viewModel) {
-//                    Toast.makeText(context,"jhkjh",Toast.LENGTH_LONG).show()
-//                }
-//                SignupScreen(viewModel) {
-//                    Toast.makeText(context,"SIGNED UP",Toast.LENGTH_LONG).show()
-//                }
+////                LoginScreen(viewModel) {
+////                    Toast.makeText(context,"jhkjh",Toast.LENGTH_LONG).show()
+////                }
+////                SignupScreen(viewModel) {
+////                    Toast.makeText(context,"SIGNED UP",Toast.LENGTH_LONG).show()
+////                }
 //                UserEventsScreen(eventViewModel) {event->
 //                    Toast.makeText(context,event.id,Toast.LENGTH_LONG).show()
 //                }

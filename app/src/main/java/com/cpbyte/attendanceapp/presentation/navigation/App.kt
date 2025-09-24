@@ -2,9 +2,11 @@ package com.cpbyte.attendanceapp.presentation.navigation
 
 import EventDetailsScreen
 import android.os.Build
+import android.widget.Toast
 import android.window.SplashScreen
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +26,8 @@ fun App(
     eventViewModel: EventViewModel,
     tokenProvider: AuthTokenProvider
 ) {
+
+    val context= LocalContext.current
 
     val startDestination = if (tokenProvider.getToken().isNotEmpty()) {
         Screen.Home.route
@@ -53,7 +57,8 @@ fun App(
                 eventViewModel = eventViewModel,
                 onEventClicked = { event ->
                     navController.navigate(Screen.EventDetails.createRoute(event.id.toString()))
-                }
+                },
+                onAddEvent = {navController.navigate(Screen.AddEvent.route)}
             )
         }
 
@@ -67,7 +72,9 @@ fun App(
                 selectedDate = selectedDate,
                 eventViewModel = eventViewModel,
                 onBack = { navController.popBackStack() },
-                onEventAdded = {}
+                onEventAdded = {
+                    Toast.makeText(context,"Event Added",Toast.LENGTH_LONG).show()
+                }
             )
         }
 
