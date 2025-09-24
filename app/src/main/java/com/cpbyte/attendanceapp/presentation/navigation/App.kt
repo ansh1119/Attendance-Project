@@ -2,6 +2,7 @@ package com.cpbyte.attendanceapp.presentation.navigation
 
 import AttendanceViewModel
 import EventDetailsScreen
+import EventParticipantsScreen
 import ScanAttendanceScreen
 import android.os.Build
 import android.widget.Toast
@@ -106,10 +107,29 @@ fun App(
                 eventId = eventId,
                 eventViewModel = eventViewModel,
                 onBack = { navController.popBackStack() },
-                onAddParticipants = { navController.navigate(Screen.AddParticipants.createRoute(eventId)) },
+                onAddParticipants = {
+                    navController.navigate(
+                        Screen.AddParticipants.createRoute(
+                            eventId
+                        )
+                    )
+                },
                 startAttendance = {
                     navController.navigate(Screen.Attendance.route)
                 },
+                allParticipants = {navController.navigate(Screen.EventParticipants.route)},
+            )
+        }
+
+        composable(
+            route = Screen.EventParticipants.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            EventParticipantsScreen(
+                eventId = eventId,
+                eventViewModel = eventViewModel,
+                onBack = { navController.popBackStack() },
             )
         }
 
