@@ -1,10 +1,14 @@
 package com.cpbyte.attendanceapp.presentation.navigation
 
+import AttendanceViewModel
 import EventDetailsScreen
+import ScanAttendanceScreen
 import android.os.Build
 import android.widget.Toast
-import android.window.SplashScreen
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -24,6 +28,7 @@ fun App(
     navController: NavHostController,
     authViewModel: AuthViewModel,
     eventViewModel: EventViewModel,
+    attendanceViewModel: AttendanceViewModel,
     tokenProvider: AuthTokenProvider
 ) {
 
@@ -34,7 +39,20 @@ fun App(
     } else {
         Screen.Login.route
     }
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(navController = navController,
+        startDestination = startDestination,
+        enterTransition = {
+            slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(700))
+        },
+        exitTransition = {
+            slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(700))
+        },
+        popEnterTransition = {
+            slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(700))
+        },
+        popExitTransition = {
+            slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(700))
+        }) {
         // Login Screen
         composable(Screen.Login.route) {
             LoginScreen(
@@ -88,8 +106,17 @@ fun App(
                 eventId = eventId,
                 eventViewModel = eventViewModel,
                 onBack = { navController.popBackStack() },
-                onAddParticipants = { navController.navigate(Screen.AddParticipants.createRoute(eventId)) }
+                onAddParticipants = { navController.navigate(Screen.AddParticipants.createRoute(eventId)) },
+                startAttendance = {
+                    navController.navigate(Screen.Attendance.route)
+                },
             )
+        }
+
+        composable(
+            route = Screen.Attendance.route
+        ) { backStackEntry ->
+            ScanAttendanceScreen(attendanceViewModel)
         }
 
         // Add Participants Screen

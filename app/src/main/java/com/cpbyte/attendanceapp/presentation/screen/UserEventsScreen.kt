@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.cpbyte.attendanceapp.data.model.Event
 import com.cpbyte.attendanceapp.presentation.EventViewModel
 import kotlinx.coroutines.launch
@@ -46,14 +47,15 @@ fun UserEventsScreen(
             },
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text("+")
+            Text("+",
+                fontSize = 28.sp)
         }
     }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black)
-                .padding(innerPadding)
+                .padding(vertical = innerPadding.calculateTopPadding(), horizontal = 8.dp)
         ) {
             Text(
                 text = "My Events",

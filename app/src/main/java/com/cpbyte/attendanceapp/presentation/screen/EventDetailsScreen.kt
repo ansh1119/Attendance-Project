@@ -22,6 +22,7 @@ import java.io.InputStream
 fun EventDetailsScreen(
     eventId: String,
     eventViewModel: EventViewModel,
+    startAttendance: ()->Unit,
     onBack: () -> Unit,
     onAddParticipants: () -> Unit
 ) {
@@ -225,14 +226,24 @@ fun EventDetailsScreen(
                             Spacer(Modifier.weight(1f))
 
                             // Send QR Button
-                            Button(
-                                onClick = { eventViewModel.sendQR(eventId) },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Text("Send Today's Mails", color = Color.Black)
-                            }
+                                Button(
+                                    onClick = { eventViewModel.sendQR(eventId) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text("Send Today's Mails", color = Color.Black)
+                                }
+
+                                Button(
+                                    onClick = { startAttendance() },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text("Start Today's Attendance", color = Color.Black)
+                                }
+
                         }
                     }
                 }

@@ -78,4 +78,7 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.9.4")
 
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+
 }

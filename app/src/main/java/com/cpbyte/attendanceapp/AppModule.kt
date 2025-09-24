@@ -1,7 +1,10 @@
 package com.cpbyte.attendanceapp
 
+import AttendanceViewModel
+import com.cpbyte.attendanceapp.data.repository.AttendanceRepositoryImpl
 import com.cpbyte.attendanceapp.data.repository.AuthRepositoryImpl
 import com.cpbyte.attendanceapp.data.repository.EventRepositoryImpl
+import com.cpbyte.attendanceapp.domain.AttendanceRepository
 import com.cpbyte.attendanceapp.presentation.AuthViewModel
 import com.cpbyte.attendanceapp.presentation.EventViewModel
 import com.cpbyte.attendanceapp.domain.AuthRepository
@@ -92,12 +95,14 @@ val networkModule = module {
 val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<EventRepository> { EventRepositoryImpl(get()) }
+    single<AttendanceRepository> { AttendanceRepositoryImpl(get()) }
 }
 
 // --------------------------- ViewModel Module ---------------------------
 val viewModelModule = module {
     viewModel { AuthViewModel(get()) }
     viewModel { EventViewModel(get()) }
+    viewModel { AttendanceViewModel(get()) }
 }
 
 // --------------------------- App Modules List ---------------------------

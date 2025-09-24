@@ -6,7 +6,7 @@ sealed class Screen(val route: String) {
     data object Login : Screen("login")
     data object Signup : Screen("signup")
     data object Home : Screen("home")
-
+    data object Attendance: Screen("attendance")
     data object AddEvent : Screen("add_event/{selectedDate}") {
         fun createRoute(selectedDate: String): String = "add_event/$selectedDate"
     }
@@ -20,4 +20,5 @@ sealed class Screen(val route: String) {
     }
 
     data object AllEvents : Screen("all_events")
+
 }

@@ -2,6 +2,7 @@ package com.cpbyte.attendanceapp.network
 
 import com.cpbyte.attendanceapp.AuthTokenProvider
 import com.cpbyte.attendanceapp.data.model.*
+import com.cpbyte.attendanceapp.domain.model.AttendanceRequest
 import com.cpbyte.attendanceapp.domain.model.LoginRequest
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -86,5 +87,12 @@ class ApiService(
            return client.get("$baseUrl/event/get/$eventId"){
                accept(ContentType.Application.Json)
            }.body()
+    }
+
+    suspend fun markAttendance(qrJson: String): Boolean {
+        return client.post("$baseUrl/event/markAttendance") {
+            contentType(ContentType.Application.Json)
+            setBody(qrJson) // send the QR JSON directly
+        }.body()
     }
 }
