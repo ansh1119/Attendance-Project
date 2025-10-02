@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
-import com.cpbyte.attendanceapp.AuthTokenProvider
+import com.cpbyte.attendanceapp.TokenDataStore
 import com.cpbyte.attendanceapp.presentation.AddEventScreen
 import com.cpbyte.attendanceapp.presentation.AuthViewModel
 import com.cpbyte.attendanceapp.presentation.EventViewModel
@@ -30,18 +30,13 @@ fun App(
     authViewModel: AuthViewModel,
     eventViewModel: EventViewModel,
     attendanceViewModel: AttendanceViewModel,
-    tokenProvider: AuthTokenProvider
+    dataStore: TokenDataStore
 ) {
 
     val context= LocalContext.current
 
-    val startDestination = if (tokenProvider.getToken().isNotEmpty()) {
-        Screen.Home.route
-    } else {
-        Screen.Login.route
-    }
     NavHost(navController = navController,
-        startDestination = startDestination,
+        startDestination = Screen.Login.route,
         enterTransition = {
             slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(700))
         },
@@ -54,6 +49,11 @@ fun App(
         popExitTransition = {
             slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(700))
         }) {
+
+        composable(Screen.Splash.route) {
+            SplashScreen(navController = navController, dataStore = dataStore)
+        }
+
         // Login Screen
         composable(Screen.Login.route) {
             LoginScreen(
@@ -139,17 +139,6 @@ fun App(
             ScanAttendanceScreen(attendanceViewModel)
         }
 
-        // Add Participants Screen
-//        composable(
-//            route = Screen.AddParticipants.route,
-//            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
-//        ) { backStackEntry ->
-//            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-//            EventDetailsScreen(
-//                eventId = eventId,
-//                eventViewModel = eventViewModel,
-//                onBack = { navController.popBackStack() }
-//            )
-//        }
+
     }
 }

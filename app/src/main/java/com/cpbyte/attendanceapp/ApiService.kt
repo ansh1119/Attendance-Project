@@ -1,6 +1,8 @@
 package com.cpbyte.attendanceapp.network
 
-import com.cpbyte.attendanceapp.AuthTokenProvider
+
+import android.util.Log
+import com.cpbyte.attendanceapp.TokenDataStore
 import com.cpbyte.attendanceapp.data.model.*
 import com.cpbyte.attendanceapp.domain.model.AttendanceRequest
 import com.cpbyte.attendanceapp.domain.model.LoginRequest
@@ -11,13 +13,14 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import org.json.JSONObject
 
 
 class ApiService(
     private val client: HttpClient,
-    private val tokenProvider: AuthTokenProvider
+    private val tokenProvider: TokenDataStore
 ) {
-    private val baseUrl = "https://56d40a63c513.ngrok-free.app"
+    private val baseUrl = "https://41e663fa7f3d.ngrok-free.app"
 
     // ---------------- Sign Up ----------------
     suspend fun signUp(user: User): Boolean {
@@ -28,6 +31,15 @@ class ApiService(
         return response.status == HttpStatusCode.OK
     }
 
+    suspend fun loginWithGoogle(idToken: String): String {
+        val response: TokenResponse = client.post("$baseUrl/public/google") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("idToken" to idToken))
+        }.body()
+
+        Log.d("TOKEN GOOGLE", response.token)
+        return response.token
+    }
     // ---------------- Login ----------------
     suspend fun login(request: LoginRequest): LoginResponse {
         val response: LoginResponse = client.post("$baseUrl/public/login") {
@@ -36,7 +48,8 @@ class ApiService(
         }.body()
 
         // Save JWT in AuthTokenProvider
-        tokenProvider.setToken(response.token)
+        val token = response.token
+        tokenProvider.saveToken(token)
         return response
     }
 

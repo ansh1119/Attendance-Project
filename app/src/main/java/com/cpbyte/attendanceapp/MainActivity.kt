@@ -28,20 +28,11 @@ class MainActivity : ComponentActivity() {
             val viewModel: AuthViewModel=get()
             val eventViewModel: EventViewModel=get()
             val attendanceViewModel: AttendanceViewModel=get()
+            val tokenDataStore: TokenDataStore=get()
             val navController= rememberNavController()
-            val tokenProvider: AuthTokenProvider=get()
+//            val tokenProvider: =get()
             AttendanceAppTheme {
-////                LoginScreen(viewModel) {
-////                    Toast.makeText(context,"jhkjh",Toast.LENGTH_LONG).show()
-////                }
-////                SignupScreen(viewModel) {
-////                    Toast.makeText(context,"SIGNED UP",Toast.LENGTH_LONG).show()
-////                }
-//                UserEventsScreen(eventViewModel) {event->
-//                    Toast.makeText(context,event.id,Toast.LENGTH_LONG).show()
-//                }
-
-                App(navController,viewModel,eventViewModel,attendanceViewModel,tokenProvider)
+                App(navController,viewModel,eventViewModel,attendanceViewModel,tokenDataStore)
             }
         }
     }

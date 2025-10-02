@@ -250,7 +250,7 @@ fun EventAttendancePager(
     attendance: Map<String, List<String>>
 ) {
     val daysCount = ChronoUnit.DAYS.between(startDate, endDate).toInt() + 1
-    val pagerState = rememberPagerState(pageCount = {daysCount})
+    val pagerState = rememberPagerState(pageCount = { daysCount })
 
     Column(modifier = Modifier.fillMaxWidth()) {
         HorizontalPager(
@@ -262,28 +262,55 @@ fun EventAttendancePager(
             val currentDate = startDate.plusDays(page.toLong()).toString()
             val participants = attendance[currentDate] ?: emptyList()
 
+            var searchQuery by remember { mutableStateOf("") }
+            val filteredParticipants = participants.filter {
+                it.contains(searchQuery, ignoreCase = true)
+            }
+
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     "Attendance for $currentDate",
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(8.dp)
                 )
-                if (participants.isEmpty()) {
-                    Text("No participants yet", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(8.dp))
+
+                // 🔍 Search bar
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    label = { Text("Search participants") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    singleLine = true
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                if (filteredParticipants.isEmpty()) {
+                    Text(
+                        "No participants found",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(8.dp)
+                    )
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         contentPadding = PaddingValues(8.dp)
                     ) {
-                        items(participants) { email ->
+                        items(filteredParticipants) { email ->
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = MaterialTheme.shapes.small,
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                                 elevation = CardDefaults.cardElevation(2.dp)
                             ) {
-                                Text(email, modifier = Modifier.padding(12.dp), color = MaterialTheme.colorScheme.onSurface)
+                                Text(
+                                    email,
+                                    modifier = Modifier.padding(12.dp),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
                         }
                     }
@@ -294,7 +321,9 @@ fun EventAttendancePager(
         // Pager indicator
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
         ) {
             repeat(daysCount) { index ->
                 val color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary

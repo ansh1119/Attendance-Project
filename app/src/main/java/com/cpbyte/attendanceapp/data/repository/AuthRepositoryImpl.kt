@@ -1,6 +1,7 @@
 package com.cpbyte.attendanceapp.data.repository
 
 
+import android.util.Log
 import com.cpbyte.attendanceapp.data.model.LoginResponse
 import com.cpbyte.attendanceapp.data.model.User
 import com.cpbyte.attendanceapp.domain.AuthRepository
@@ -17,5 +18,11 @@ class AuthRepositoryImpl(
 
     override suspend fun login(request: LoginRequest): LoginResponse {
         return apiService.login(request)
+    }
+
+    override suspend fun authenticate(idToken: String): String {
+        val response=apiService.loginWithGoogle(idToken)
+        Log.d("TOKEN GOOGLE",response)
+        return response
     }
 }
