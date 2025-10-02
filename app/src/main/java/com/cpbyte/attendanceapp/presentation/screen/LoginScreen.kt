@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cpbyte.attendanceapp.BuildConfig
 import com.cpbyte.attendanceapp.domain.model.LoginRequest
 import com.cpbyte.attendanceapp.presentation.AuthViewModel
 import com.cpbyte.attendanceapp.presentation.component.AppTextField
@@ -59,7 +60,7 @@ fun LoginScreen(
                     } catch (e: ApiException) {
                         Log.e("GoogleSignIn", "ApiException: Code ${e.statusCode}, Message: ${e.message}", e)
                         val errorMessage = when (e.statusCode) {
-                            12501 -> "Sign-in was canceled by user or failed due to configuration issue"
+                            12501 -> "Sign-in was canceled or failed. Check your Client ID configuration."
                             12502 -> "Sign-in failed due to network error"
                             12500 -> "Sign-in failed due to unknown error"
                             else -> "Sign-in failed: ${e.statusCode}"
@@ -87,7 +88,7 @@ fun LoginScreen(
 
     // Observe state from ViewModel
     val loginResponse by authViewModel.loginResponse.collectAsStateWithLifecycle()
-    val jwtToken by authViewModel.jwtToken.collectAsStateWithLifecycle() // for Google login
+    val jwtToken by authViewModel.jwtToken.collectAsStateWithLifecycle()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -169,18 +170,30 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Google Sign-In button
-        // Google Sign-In button
         Button(
             onClick = {
                 try {
-                    // CRITICAL: Use your WEB Client ID here, not Android Client ID
-                    val webClientId = "648300624465-016k2rodt2ree6t9h35n6moiucqsm16e.apps.googleusercontent.com"
+                    // Use BuildConfig to get the Web Client ID
+                    val webClientId = BuildConfig.CLIENT_ID
+
+
+
+                    // Validate that CLIENT_ID is not empty
+                    if (webClientId.isEmpty()) {
+                        Toast.makeText(
+                            context,
+                            "Client ID not configured. Check gradle.properties",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@Button
+                    }
 
                     Log.d("GoogleSignIn", "Starting Google Sign-In")
                     Log.d("GoogleSignIn", "Package: ${context.packageName}")
+                    Log.d("GoogleSignIn", "Client ID: ${webClientId.take(20)}...") // Log first 20 chars only
 
                     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(webClientId) // Must be WEB client ID
+                        .requestIdToken(webClientId) // Use Web Client ID from BuildConfig
                         .requestEmail()
                         .requestProfile()
                         .build()

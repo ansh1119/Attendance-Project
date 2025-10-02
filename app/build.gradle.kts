@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,6 +12,11 @@ android {
     namespace = "com.cpbyte.attendanceapp"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig=true
+        compose = true
+    }
+    
     defaultConfig {
         applicationId = "com.cpbyte.attendanceapp"
         minSdk = 24
@@ -17,7 +25,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val clientId = gradleLocalProperties(rootDir, providers).getProperty("CLIENT_ID")
+        buildConfigField("String", "CLIENT_ID", "\"$clientId\"")
     }
+
 
     buildTypes {
         release {
@@ -35,9 +47,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose = true
-    }
+
 }
 
 dependencies {
